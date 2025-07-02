@@ -1,0 +1,5 @@
+venv
+Sikuli*
+sikuli_captured
+*.xml
+*.html

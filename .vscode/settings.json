@@ -1,0 +1,17 @@
+{
+    // "python.defaultInterpreterPath": "/venv/Scripts/python.exe",
+    // "robot.python.executable": "${workspaceFolder}/venv/Scripts/python.exe",
+    "robot.python.env": {
+        "PYTHONPATH": "${workspaceFolder}/venv/Lib/site-packages"
+    },
+    "[robotframework]": {
+        "editor.defaultFormatter": "robocorp.robotframework-lsp"
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/Sikuli*": true,
+        "**/*.xml": true,
+        "**/.ruff*":true
+    },
+    "terminal.integrated.defaultProfile.windows": "Git Bash"
+}
