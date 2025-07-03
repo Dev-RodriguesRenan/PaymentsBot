@@ -33,8 +33,9 @@ def generate_filename_with_date(filename):
     return f'{filename}_{datatime_now_formated}'
 
 def move(source,destination):
-    if not os.path.exists(source):
+    if not os.path.exists(os.path.dirname(source)):
+        print(f'File {source} does not exist.')
         return False
-   
+    print(f'Moving file from {source} to {destination}')
     shutil.move(source,destination)
     return True

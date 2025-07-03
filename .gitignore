@@ -3,3 +3,5 @@ Sikuli*
 sikuli_captured
 *.xml
 *.html
+data/
+tests/
