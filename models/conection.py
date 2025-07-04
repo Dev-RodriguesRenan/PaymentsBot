@@ -30,4 +30,8 @@ def get_session(
         username=username, password=password, host=host, database=database
     )
     Session = sessionmaker(bind=engine)
-    return Session()
+    session = Session()
+    try:
+        yield session
+    finally:
+        session.close()

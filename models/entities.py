@@ -23,7 +23,7 @@ class Dtype:
     BAIXAS = "baixas"
 
 
-class PendenciasBaixas(Base):
+class Payments(Base):
     __tablename__ = "pendencias_baixas"
     id_pendencias_baixas = Column(
         BigInteger, primary_key=True, autoincrement=True
