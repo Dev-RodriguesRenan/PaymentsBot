@@ -7,6 +7,11 @@ Export Reports Lows
     Open FJFrigo
     Do Login FJFrigo
     Select Reports Lows
-    Open Excel
-    Save Excel File    RelatorioRealizacoesBaixas
-    Close FJFrigo
+    ${result}    Check If Is Possible Generate Report
+    IF    ${result} == False
+        Log    Não é possível gerar o relatório de parcelas pendentes. Verifique se há parcelas pendentes no sistema.    console=True
+    ELSE
+        Open Excel
+        Save Excel File    RelatorioRealizacoesBaixas
+        Close FJFrigo
+    END
