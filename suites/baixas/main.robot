@@ -11,6 +11,7 @@ Export Reports Lows
     IF    ${result} == False
         Log    Não é possível gerar o relatório de parcelas pendentes. Verifique se há parcelas pendentes no sistema.    console=True
     ELSE
+        Log    Gerando relatório de baixas...    console=True
         Open Excel
         Save Excel File    RelatorioRealizacoesBaixas
         Close FJFrigo

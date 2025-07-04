@@ -9,7 +9,7 @@ import os
 from pprint import pprint
 import shutil
 import pandas as pd
-from models.conection import get_engine
+from models.conection import get_engine, get_session
 from models.entities import Dtype, Payments
 from services.payments_service import cleaned_dataframe, columns_mapper
 
@@ -68,3 +68,20 @@ ON pb.cnpj_cpf = b.cnpj_cpf JOIN carga c ON c.id = b.carga_id
         dataframe = pd.read_sql(query, conn)
         dataframe.drop_duplicates(inplace=True)
         return dataframe
+
+def drop_all_payments():
+    with get_session() as session:
+        payments = session.query(Payments).all()
+        for payment in payments:
+            session.delete(payment)
+        session.commit()
+    for file in os.listdir('data/checked'):
+        if file.endswith('.xlsx'):
+            os.remove(f'data/checked/{file}')
+    for file in os.listdir('data/processed'):
+        if file.endswith('.xlsx'):
+            os.remove(f'data/processed/{file}')
+    for file in os.listdir('data'):
+        if file.endswith('.xlsx'):
+            os.remove(f'data/{file}')
+    pprint("[INFO] All payments and processed files have been dropped.")
