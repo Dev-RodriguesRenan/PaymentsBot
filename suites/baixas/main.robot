@@ -1,5 +1,5 @@
 *** Settings ***
-Resource    ../keywords/keywords.robot
+Resource    ../../keywords/keywords.robot
 Test Setup    Load Folder images
 
 *** Test Cases ***

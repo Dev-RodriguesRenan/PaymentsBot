@@ -1,5 +1,6 @@
 import datetime
 import os
+from pprint import pprint
 import shutil
 import pyautogui
 import time
@@ -38,8 +39,8 @@ def generate_filename_with_date(filename):
 
 def move(source, destination):
     if not os.path.exists(os.path.dirname(source)):
-        print(f"File {source} does not exist.")
+        pprint(f"File {source} does not exist.")
         return False
-    print(f"Moving file from {source} to {destination}")
+    pprint(f"Moving file from {source} to {destination}")
     shutil.move(source, destination)
     return True

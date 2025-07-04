@@ -60,7 +60,7 @@ Save Excel File
     Type With Modifiers    ${new_filename}
     Press Special Key    ENTER
     Wait Excel is Opened
-    Sleep    20    Espera 20s para o excel salvar a planilha
+    Sleep    10    Espera 10s para o excel salvar a planilha
     Press Keys    alt    f4
     ${src}    Set Variable    C:/Users/use/Documents/${new_filename}.xlsx
     ${dst}    Set Variable     C:/Users/use/Desktop/payments-reports-bot/data/${new_filename}.xlsx

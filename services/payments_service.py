@@ -1,6 +1,7 @@
 import pandas as pd
 from pprint import pprint
 
+
 def cleaned_dataframe(dataframe: pd.DataFrame):
     # Define as colunas permitidas (normalizadas para facilitar a comparação)
     allowed_columns = [

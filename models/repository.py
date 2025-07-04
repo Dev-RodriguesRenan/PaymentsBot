@@ -13,6 +13,7 @@ from models.conection import get_engine
 from models.entities import Dtype, Payments
 from services.payments_service import cleaned_dataframe, columns_mapper
 
+
 def create_pendencias_baixas(path_file, header):
     dataframe = pd.read_excel(path_file, header=header)
     dataframe = dataframe.dropna(
@@ -26,7 +27,7 @@ def create_pendencias_baixas(path_file, header):
     pprint(f"[INFO] DataFrame renomeado:\n{dataframe.head(5)}")
     # remove linhas onde cnpj_cpf é NaN ou vazio
     dataframe.dropna(subset=["cnpj_cpf"], inplace=True)
-    dataframe = dataframe[dataframe['cnpj_cpf'].astype(str).str.strip() != '']
+    dataframe = dataframe[dataframe["cnpj_cpf"].astype(str).str.strip() != ""]
     dataframe["filename"] = os.path.basename(path_file)
     dataframe["dtype"] = (
         Dtype.PENDENCIAS
@@ -51,10 +52,9 @@ def create_pendencias_baixas(path_file, header):
     return dataframe
 
 
-
 def payments_df_generator():
     with get_engine().connect() as conn:
-        query = f"""
+        query = """
 SELECT 
     pb.id_pendencias_baixas, pb.id, pb.valor_parcela, pb.documento, 
     pb.valor_pendente, 
@@ -65,4 +65,6 @@ SELECT
 FROM pendencias_baixas pb JOIN bordero b 
 ON pb.cnpj_cpf = b.cnpj_cpf JOIN carga c ON c.id = b.carga_id
 """
-        return pd.read_sql(query, conn)
+        dataframe = pd.read_sql(query, conn)
+        dataframe.drop_duplicates(inplace=True)
+        return dataframe
