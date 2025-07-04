@@ -9,6 +9,7 @@ from sqlalchemy import (
     Column,
     BigInteger,
     DateTime,
+    Enum,
     String,
     DECIMAL,
     Date,
@@ -17,12 +18,17 @@ from sqlalchemy import (
 from models.base import Base
 
 
+class Dtype:
+    PENDENCIAS = "pendencias"
+    BAIXAS = "baixas"
+
+
 class PendenciasBaixas(Base):
     __tablename__ = "pendencias_baixas"
     id_pendencias_baixas = Column(
         BigInteger, primary_key=True, autoincrement=True
     )
-    id = Column(BigInteger, nullable=False, unique=True)
+    id = Column(BigInteger, nullable=False)
     valor_parcela = Column(DECIMAL(10, 2), nullable=False)
     documento = Column(String(60), nullable=False)
     valor_pendente = Column(DECIMAL(10, 2), nullable=False)
@@ -33,6 +39,7 @@ class PendenciasBaixas(Base):
     data_baixa = Column(Date)
     idcentro_custo = Column(BigInteger)
     filename = Column(String(100), nullable=True)
+    dtype = Column(Enum("pendencias", "baixas", name="dtype"), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
     def __init__(

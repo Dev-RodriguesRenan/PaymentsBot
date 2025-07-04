@@ -7,9 +7,10 @@ Colunas de baixas:
 
 import os
 from pprint import pprint
+import shutil
 import pandas as pd
 from models.conection import get_engine
-from models.entities import PendenciasBaixas
+from models.entities import Dtype, PendenciasBaixas
 
 
 def create_pendencias_baixas(path_file, header):
@@ -24,6 +25,11 @@ def create_pendencias_baixas(path_file, header):
     dataframe = dataframe.rename(columns=columns)
     pprint(f"[INFO] DataFrame renomeado:\n{dataframe.head(5)}")
     dataframe["filename"] = os.path.basename(path_file)
+    dataframe["dtype"] = (
+        Dtype.PENDENCIAS
+        if "pendencias" in os.path.basename(path_file)
+        else Dtype.BAIXAS
+    )
     with get_engine().connect() as conn:
         dataframe.to_sql(
             PendenciasBaixas.__tablename__,
@@ -31,6 +37,12 @@ def create_pendencias_baixas(path_file, header):
             if_exists="append",
             index=False,
         )
+    try:
+        os.makedirs("data/checked", exist_ok=True)
+        shutil.move(path_file,f'data/checked/{os.path.basename(path_file)}')
+    except FileNotFoundError:
+        print(f"[ERROR] Não foi possível mover o arquivo {path_file} para a pasta 'data/checked'.")
+    
     return dataframe
 
 
@@ -92,3 +104,13 @@ def columns_mapper(dataframe: pd.DataFrame):
             columns[column] = "centro_custo"
     pprint(f"[INFO] Colunas mapeadas: {columns}")
     return columns
+
+
+def generate_pendencias_baixas_df():
+    with get_engine().connect() as conn:
+        query = f"""SELECT 
+pb.id_pendencias_baixas, pb.id, pb.valor_parcela, pb.documento, pb.valor_pendente, 
+pb.emitente, pb.cnpj_cpf, pb.grupo_centro_de_custo, pb.centro_custo, pb.data_baixa, pb.idcentro_custo, 
+pb.filename, pb.created_at,  b.id as bordero_id, c.nome as bordero_filename
+FROM pendencias_baixas pb JOIN bordero b ON pb.cnpj_cpf = b.cnpj_cpf JOIN carga c ON c.id = b.carga_id"""
+        return pd.read_sql(query, conn)

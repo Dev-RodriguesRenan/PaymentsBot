@@ -5,3 +5,4 @@ sikuli_captured
 *.html
 data/
 tests/
+__pycache__/

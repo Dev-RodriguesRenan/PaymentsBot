@@ -8,7 +8,7 @@
         "editor.defaultFormatter": "robocorp.robotframework-lsp"
     },
     "files.exclude": {
-        "**/__pycache__": true,
+        // "**/__pycache__": true,
         "**/Sikuli*": true,
         "**/*.xml": true,
         "**/.ruff*":true
