@@ -69,19 +69,20 @@ ON pb.cnpj_cpf = b.cnpj_cpf JOIN carga c ON c.id = b.carga_id
         dataframe.drop_duplicates(inplace=True)
         return dataframe
 
+
 def drop_all_payments():
     with get_session() as session:
         payments = session.query(Payments).all()
         for payment in payments:
             session.delete(payment)
         session.commit()
-    for file in os.listdir('data/checked'):
-        if file.endswith('.xlsx'):
-            os.remove(f'data/checked/{file}')
-    for file in os.listdir('data/processed'):
-        if file.endswith('.xlsx'):
-            os.remove(f'data/processed/{file}')
-    for file in os.listdir('data'):
-        if file.endswith('.xlsx'):
-            os.remove(f'data/{file}')
+    for file in os.listdir("data/checked"):
+        if file.endswith(".xlsx"):
+            os.remove(f"data/checked/{file}")
+    for file in os.listdir("data/processed"):
+        if file.endswith(".xlsx"):
+            os.remove(f"data/processed/{file}")
+    for file in os.listdir("data"):
+        if file.endswith(".xlsx"):
+            os.remove(f"data/{file}")
     pprint("[INFO] All payments and processed files have been dropped.")

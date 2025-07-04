@@ -23,6 +23,7 @@ def get_engine(
         echo=echo,
     )
 
+
 @contextmanager
 def get_session(
     username=username, password=password, host=host, database=database

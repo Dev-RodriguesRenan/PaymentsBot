@@ -4,7 +4,11 @@ import subprocess
 import time
 from models.base import Base
 from models.conection import get_engine
-from models.repository import create_pendencias_baixas, drop_all_payments, payments_df_generator
+from models.repository import (
+    create_pendencias_baixas,
+    drop_all_payments,
+    payments_df_generator,
+)
 from pprint import pprint
 import schedule
 
@@ -48,11 +52,14 @@ def main():
         f"data/processed/RelatorioDePagamentos_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
         index=False,
     )
-    for file in os.listdir('data/processed'):
-        send_whatsapp(username=os.getenv('CONTATO'),file=os.path.join('data','processed',file))
+    for file in os.listdir("data/processed"):
+        send_whatsapp(
+            username=os.getenv("CONTATO"),
+            file=os.path.join("data", "processed", file),
+        )
     drop_all_payments()
     pprint("[INFO] DataFrame genereted.", dataframe.head())
-    
+
 
 if __name__ == "__main__":
     schedule.every().day.at("06:00").do(main)
@@ -60,4 +67,4 @@ if __name__ == "__main__":
     while True:
         schedule.run_pending()
         time.sleep(1)
-        print("[INFO] Waiting for the next scheduled run...",end='\r')
+        print("[INFO] Waiting for the next scheduled run...", end="\r")
