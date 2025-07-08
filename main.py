@@ -1,6 +1,7 @@
 import datetime
 import os
 import subprocess
+import sys
 import time
 from models.base import Base
 from models.conection import get_engine
@@ -15,6 +16,7 @@ import schedule
 from whatsapp.whatsapp import send_whatsapp
 
 Base.metadata.create_all(get_engine())
+contatos = os.getenv("CONTATOS").split(",")
 
 
 def run_file(path_file):
@@ -30,7 +32,7 @@ def run_file(path_file):
 
 
 def main():
-    if datetime.datetime.now().weekday() not in [5, 6]:
+    if datetime.datetime.now().weekday() in [5, 6]:
         pprint("[INFO] Today is not a weekend, skipping execution.")
         return
     for folder in os.listdir("suites"):
@@ -53,15 +55,25 @@ def main():
         index=False,
     )
     for file in os.listdir("data/processed"):
-        send_whatsapp(
-            username=os.getenv("CONTATO"),
-            file=os.path.join("data", "processed", file),
-        )
+        for contato in contatos:
+            send_whatsapp(
+                username=contato,
+                file=os.path.join("data", "processed", file),
+            )
     drop_all_payments()
     pprint("[INFO] DataFrame genereted.", dataframe.head())
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--debug":
+            main()
+            sys.exit(0)
+        else:
+            print(
+                "[ERROR] Invalid argument. Use '--debug' to execute the script."
+            )
+            sys.exit(1)
     schedule.every().day.at("06:00").do(main)
 
     while True:
