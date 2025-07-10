@@ -9,6 +9,7 @@ username = os.getenv("USUARIO")
 password = os.getenv("SENHA")
 host = os.getenv("NOME_DO_HOST")
 database = os.getenv("BANCO_DE_DADOS")
+show_sql = os.getenv("SHOW_SQL", "False")
 
 
 def get_engine(
@@ -16,7 +17,7 @@ def get_engine(
     password=password,
     host=host,
     database=database,
-    echo=True,
+    echo=True if show_sql == "True" else False,
 ):
     return create_engine(
         f"mysql+pymysql://{username}:{password}@{host}:3306/{database}",

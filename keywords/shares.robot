@@ -19,9 +19,12 @@ Choice Option
     [Arguments]    ${option}
     Wait and Click    select_menu.png    7
     Press Special Key    UP
+    Press Special Key    UP
     FOR    ${counter}    IN RANGE    0    ${option}
         Press Special Key    DOWN
+        Sleep    1
     END
+    Sleep    1    
     Press Special Key    ENTER
 
 Wait Can Open Excel

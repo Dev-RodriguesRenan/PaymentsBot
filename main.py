@@ -24,7 +24,16 @@ def run_file(path_file):
         logger.info(" Starting robot...")
         if not os.path.exists(path_file):
             raise FileNotFoundError(f"[ERROR] File {path_file} not found.")
-        subprocess.run(["python", "-m", "robot", "-d", "results", path_file])
+        subprocess.run(
+            [
+                "venv/Scripts/python.exe",
+                "-m",
+                "robot",
+                "-d",
+                "results",
+                path_file,
+            ]
+        )
         logger.info(" Robot finished successfully.")
     except Exception as e:
         logger.critical(
