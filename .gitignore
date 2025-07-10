@@ -5,5 +5,7 @@ sikuli_captured
 *.html
 data/
 tests/
+results/
+logs/
 .env
 __pycache__/

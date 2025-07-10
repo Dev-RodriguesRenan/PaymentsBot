@@ -1,5 +1,5 @@
 import os
-from pprint import pprint
+from logger.logger import logger
 from wrapper_vjwhats import WhatsApp
 from selenium import webdriver
 
@@ -26,8 +26,8 @@ def send_whatsapp(
         whatsapp.find_by_username(username)
         whatsapp.send_message(message)
         whatsapp.send_file(file, 1)
-        pprint(f"[INFO] Mensagem enviada para {username} com sucesso!")
+        logger.info(f" Mensagem enviada para {username} com sucesso!")
     except Exception as e:
-        pprint(f"[ERROR] Ocorreu um erro ao enviar a mensagem: {e}")
+        logger.critical(f"[ERROR] Ocorreu um erro ao enviar a mensagem: {e}")
     finally:
         driver.quit()

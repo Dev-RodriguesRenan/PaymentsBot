@@ -6,7 +6,7 @@ Colunas de baixas:
 """
 
 import os
-from pprint import pprint
+from logger.logger import logger
 import shutil
 import pandas as pd
 from models.conection import get_engine, get_session
@@ -19,12 +19,12 @@ def create_pendencias_baixas(path_file, header):
     dataframe = dataframe.dropna(
         how="all", axis=0
     )  # Remove linhas totalmente vazias
-    pprint(f"[INFO] DataFrame original:\n{dataframe.head(5)}")
+    logger.info(f" DataFrame original:\n{dataframe.head(5)}")
     dataframe = cleaned_dataframe(dataframe)
-    pprint(f"[INFO] DataFrame limpo:\n{dataframe.head(5)}")
+    logger.info(f" DataFrame limpo:\n{dataframe.head(5)}")
     columns = columns_mapper(dataframe)
     dataframe = dataframe.rename(columns=columns)
-    pprint(f"[INFO] DataFrame renomeado:\n{dataframe.head(5)}")
+    logger.info(f" DataFrame renomeado:\n{dataframe.head(5)}")
     # remove linhas onde cnpj_cpf é NaN ou vazio
     dataframe.dropna(subset=["cnpj_cpf"], inplace=True)
     dataframe = dataframe[dataframe["cnpj_cpf"].astype(str).str.strip() != ""]
@@ -45,7 +45,7 @@ def create_pendencias_baixas(path_file, header):
         os.makedirs("data/checked", exist_ok=True)
         shutil.move(path_file, f"data/checked/{os.path.basename(path_file)}")
     except FileNotFoundError:
-        print(
+        logger.critical(
             f"[ERROR] Não foi possível mover o arquivo {path_file} para a pasta 'data/checked'."
         )
 
@@ -67,6 +67,7 @@ ON pb.cnpj_cpf = b.cnpj_cpf JOIN carga c ON c.id = b.carga_id
 """
         dataframe = pd.read_sql(query, conn)
         dataframe.drop_duplicates(inplace=True)
+        logger.info(f" DataFrame Payments Generated:\n{dataframe.head(5)}")
         return dataframe
 
 
@@ -85,4 +86,4 @@ def drop_all_payments():
     for file in os.listdir("data"):
         if file.endswith(".xlsx"):
             os.remove(f"data/{file}")
-    pprint("[INFO] All payments and processed files have been dropped.")
+    logger.info(" All payments and processed files have been dropped.")

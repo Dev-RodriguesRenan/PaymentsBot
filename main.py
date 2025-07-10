@@ -10,7 +10,7 @@ from models.repository import (
     drop_all_payments,
     payments_df_generator,
 )
-from pprint import pprint
+from logger.logger import logger
 import schedule
 
 from whatsapp.whatsapp import send_whatsapp
@@ -21,34 +21,41 @@ contatos = os.getenv("CONTATOS").split(",")
 
 def run_file(path_file):
     try:
-        pprint("[INFO] Starting robot...")
+        logger.info(" Starting robot...")
         if not os.path.exists(path_file):
             raise FileNotFoundError(f"[ERROR] File {path_file} not found.")
         subprocess.run(["python", "-m", "robot", "-d", "results", path_file])
-        pprint("[INFO] Robot finished successfully.")
+        logger.info(" Robot finished successfully.")
     except Exception as e:
-        pprint(f"[ERROR] An error occurred while running the robot: {e}")
+        logger.critical(
+            f"[ERROR] An error occurred while running the robot: {e}"
+        )
         raise
 
 
 def main():
+    # check if the current day is a weekend (Saturday or Sunday)
     if datetime.datetime.now().weekday() in [5, 6]:
-        pprint("[INFO] Today is not a weekend, skipping execution.")
+        logger.info(" Today is not a weekend, skipping execution.")
         return
+    # execute all robot files in the suites directory
     for folder in os.listdir("suites"):
         for file in os.listdir(f"suites/{folder}"):
             if file.endswith(".robot"):
                 run_file(f"suites/{folder}/{file}")
-    pprint("Database and tables created successfully.")
+    logger.info("Database and tables created successfully.")
+    # check if the data directory exists and create pendencias baixas
     for file in os.listdir("data"):
         if file.endswith(".xlsx"):
-            pprint(f"[INFO] Processing file: {file}")
+            logger.info(f" Processing file: {file}")
             header = 4 if "RealizacoesBaixas" in file else 3
             create_pendencias_baixas(f"data/{file}", header)
-            pprint(f"[INFO] File {file} processed successfully.")
+            logger.info(f" File {file} processed successfully.")
+    # generate payments dataframe, export in excel file and send by whatsApp
     dataframe = payments_df_generator()
     if dataframe.empty:
-        pprint("[WARNING] No data found in the database.")
+        logger.warning("[WARNING] No data found in the database.")
+        drop_all_payments()
         return
     dataframe.to_excel(
         f"data/processed/RelatorioDePagamentos_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
@@ -60,8 +67,9 @@ def main():
                 username=contato,
                 file=os.path.join("data", "processed", file),
             )
+    # clear database payments table
     drop_all_payments()
-    pprint("[INFO] DataFrame genereted.", dataframe.head())
+    logger.info("Finished processing files 'Pendencias' and 'Baixas'.")
 
 
 if __name__ == "__main__":
@@ -70,7 +78,7 @@ if __name__ == "__main__":
             main()
             sys.exit(0)
         else:
-            print(
+            logger.error(
                 "[ERROR] Invalid argument. Use '--debug' to execute the script."
             )
             sys.exit(1)
@@ -79,4 +87,7 @@ if __name__ == "__main__":
     while True:
         schedule.run_pending()
         time.sleep(1)
-        print("[INFO] Waiting for the next scheduled run...", end="\r")
+        print(
+            f"{time.strftime('%X')} -  Waiting for the next scheduled run...",
+            end="\r",
+        )

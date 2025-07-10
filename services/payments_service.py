@@ -1,5 +1,5 @@
 import pandas as pd
-from pprint import pprint
+from logger.logger import logger
 
 
 def cleaned_dataframe(dataframe: pd.DataFrame):
@@ -25,7 +25,9 @@ def cleaned_dataframe(dataframe: pd.DataFrame):
             column.lower().replace(".", "").replace("_", " ")
             not in allowed_columns
         ):
-            pprint(f"Coluna '{column}' não permitida. Removendo do DataFrame.")
+            logger.warning(
+                f"Coluna '{column}' não permitida. Removendo do DataFrame."
+            )
             dataframe.drop(columns=[column], inplace=True)
 
     return dataframe
@@ -58,5 +60,5 @@ def columns_mapper(dataframe: pd.DataFrame):
             columns[column] = "grupo_centro_de_custo"
         elif column_cleaned == "centro de custo":
             columns[column] = "centro_custo"
-    pprint(f"[INFO] Colunas mapeadas: {columns}")
+    logger.info(f" Colunas mapeadas: {columns}")
     return columns

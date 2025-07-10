@@ -30,7 +30,7 @@ Fill Login Form
     Press Special Key    ENTER
 
 Select Reports Pending
-    Wait Until Screen Contain    options_bar.png    10
+    Sleep    5
     Key Down    ALT
     Type With Modifiers    313
     Key Up    ALT
@@ -40,7 +40,7 @@ Select Reports Pending
     Run Keyword If    ${PRINT}    Press Special Key    ENTER
 
 Select Reports Lows
-    Wait Until Screen Contain    options_bar.png    10
+    Sleep    5
     Key Down    ALT
     Type With Modifiers    315
     Key Up    ALT
