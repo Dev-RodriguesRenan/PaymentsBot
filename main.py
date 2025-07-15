@@ -47,6 +47,8 @@ def main():
     if datetime.datetime.now().weekday() in [5, 6]:
         logger.info(" Today is not a weekend, skipping execution.")
         return
+    # clear database payments table before running the scripts
+    drop_all_payments()
     # execute all robot files in the suites directory
     for folder in os.listdir("suites"):
         for file in os.listdir(f"suites/{folder}"):
@@ -64,7 +66,6 @@ def main():
     dataframe = payments_df_generator()
     if dataframe.empty:
         logger.warning("[WARNING] No data found in the database.")
-        drop_all_payments()
         return
     dataframe.to_excel(
         f"data/processed/RelatorioDePagamentos_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
@@ -76,8 +77,7 @@ def main():
                 username=contato,
                 file=os.path.join("data", "processed", file),
             )
-    # clear database payments table
-    drop_all_payments()
+
     logger.info("Finished processing files 'Pendencias' and 'Baixas'.")
 
 

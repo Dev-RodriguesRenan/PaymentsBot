@@ -79,10 +79,12 @@ def drop_all_payments():
         session.commit()
     for file in os.listdir("data/checked"):
         if file.endswith(".xlsx"):
-            os.remove(f"data/checked/{file}")
+            logger.warning(f"removing data/checked/{file}")
+            # os.remove(f"data/checked/{file}")
     for file in os.listdir("data/processed"):
         if file.endswith(".xlsx"):
-            os.remove(f"data/processed/{file}")
+            logger.warning(f"removing data/processed/{file}")
+            # os.remove(f"data/processed/{file}")
     for file in os.listdir("data"):
         if file.endswith(".xlsx"):
             os.remove(f"data/{file}")
