@@ -73,6 +73,7 @@ def main():
     )
     for file in os.listdir("data/processed"):
         for contato in contatos:
+            logger.info(f" Sending file {file} to {contato} via WhatsApp.")
             send_whatsapp(
                 username=contato,
                 file=os.path.join("data", "processed", file),
