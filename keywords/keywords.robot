@@ -10,7 +10,7 @@ Open FJFrigo
     Press Special Key    ENTER
 
 Do Login FJFrigo
-    Wait Until Screen Contain    menu_fj_login.png    10
+    Wait Until Screen Contain    menu_fj_login.png    60
     Choice Option    5
     Sleep    2
     Press Special Key    TAB
