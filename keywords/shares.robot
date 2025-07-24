@@ -1,5 +1,6 @@
 *** Settings ***
 Library    SikuliLibrary
+Library    keywords.py
 
 *** Variables ***
 ${PATH_IMAGES}    C:/Users/use/Desktop/payments-reports-bot/images
@@ -17,7 +18,7 @@ Wait and Click
 
 Choice Option
     [Arguments]    ${option}
-    Wait and Click    select_menu.png    7
+    Click At Position    (531,360)
     Press Special Key    UP
     Press Special Key    UP
     FOR    ${counter}    IN RANGE    0    ${option}

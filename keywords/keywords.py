@@ -9,7 +9,9 @@ from pywinauto import Desktop
 def press_keys(key1, key2):
     pyautogui.hotkey(key1, key2)
 
-
+def click_at_position(cordinades:tuple):
+    print(f'click in position {cordinades}:{type(cordinades)}')
+    pyautogui.click(*cordinades)
 def switch_to_fj_frigo():
     """Tenta encontrar uma janela cujo título contenha 'FJ Frigo' e traz o foco para ela."""
     while True:
