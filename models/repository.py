@@ -60,10 +60,10 @@ SELECT
     pb.valor_pendente, 
     pb.emitente, pb.cnpj_cpf, pb.grupo_centro_de_custo, 
     pb.centro_custo, pb.data_baixa, pb.idcentro_custo, 
-    pb.filename, pb.created_at 
-    # b.id as bordero_id 
-    # c.nome as bordero_filename
+    c.nome as filename, pb.created_at 
+    # b.id as bordero_id, pb.filename
 FROM pendencias_baixas pb JOIN bordero b ON pb.cnpj_cpf = b.cnpj_cpf
+JOIN carga c ON c.id = b.carga_id
 """
         dataframe = pd.read_sql(query, conn)
         dataframe.drop_duplicates(inplace=True)
