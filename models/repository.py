@@ -56,18 +56,44 @@ def payments_df_generator():
     with get_engine().connect() as conn:
         query = """
 SELECT 
-    pb.id_pendencias_baixas, pb.id, pb.valor_parcela, pb.documento, 
+    pb.cnpj_cpf,
+    pb.emitente,
+    pb.documento,
+    pb.valor_parcela, 
     pb.valor_pendente, 
-    pb.emitente, pb.cnpj_cpf, pb.grupo_centro_de_custo, 
-    pb.centro_custo, pb.data_baixa, pb.idcentro_custo, 
-    c.nome as filename, pb.created_at 
+    pb.data_baixa,
+    pb.idcentro_custo,
+    pb.centro_custo, 
+    pb.grupo_centro_de_custo, 
+    pb.centro_custo, 
+    c.nome as filename, 
+    c.origem as base
     # b.id as bordero_id, pb.filename
-FROM pendencias_baixas pb JOIN bordero b ON pb.cnpj_cpf = b.cnpj_cpf
-JOIN carga c ON c.id = b.carga_id
+FROM bordero b JOIN 
+carga c on b.carga_id = c.id JOIN
+pendencias_baixas pb on b.cnpj_cpf= pb.cnpj_cpf
 """
         dataframe = pd.read_sql(query, conn)
         dataframe.drop_duplicates(inplace=True)
         logger.info(f" DataFrame Payments Generated:\n{dataframe.head(5)}")
+        return dataframe
+
+
+def not_occurrence_df_generator():
+    with get_engine().connect() as conn:
+        query = """
+SELECT 
+*
+FROM bordero b WHERE b.cnpj_cpf not in 
+(
+	select pb.cnpj_cpf FROM pendencias_baixas pb)
+"""
+        dataframe = pd.read_sql(query, conn)
+        dataframe["cnpj_cpf"].apply(lambda x: str(x).strip())
+        dataframe.drop_duplicates(subset=["cnpj_cpf"], inplace=True)
+        logger.info(
+            f" DataFrame Not Ocurrence Generated:\n{dataframe.head(5)}"
+        )
         return dataframe
 
 
