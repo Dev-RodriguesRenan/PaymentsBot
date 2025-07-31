@@ -8,6 +8,7 @@ from models.conection import get_engine
 from models.repository import (
     create_pendencias_baixas,
     drop_all_payments,
+    not_occurrence_df_generator,
     payments_df_generator,
 )
 from logger.logger import logger
@@ -64,13 +65,21 @@ def main():
             logger.info(f" File {file} processed successfully.")
     # generate payments dataframe, export in excel file and send by whatsApp
     dataframe = payments_df_generator()
+    df_no_occurrencies = not_occurrence_df_generator()
     if dataframe.empty:
         logger.warning("[WARNING] No data found in the database.")
         return
+    filename_rel_payments = f"data/processed/RelatorioDePagamentos_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
     dataframe.to_excel(
-        f"data/processed/RelatorioDePagamentos_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
+        filename_rel_payments,
         index=False,
     )
+    filename_not_ocurrencies = None
+    if not df_no_occurrencies.empty:
+        filename_not_ocurrencies = (
+            "data/not_occurencies/RelatorioDeNaoOcorrencias.xlsx"
+        )
+        df_no_occurrencies.to_excel(filename_not_ocurrencies, index=False)
     for file in os.listdir("data/processed"):
         for contato in contatos:
             logger.info(f" Sending file {file} to {contato} via WhatsApp.")
@@ -78,7 +87,19 @@ def main():
                 username=contato,
                 file=os.path.join("data", "processed", file),
             )
-
+    if filename_not_ocurrencies:
+        [
+            send_whatsapp(
+                username=contato,
+                file=filename_not_ocurrencies,
+                message=f"""
+> Clientes não correspondentes em Bordero\n 
+Segue os Clientes (CNPJs/CPFs) de "_{os.path.basename(filename_rel_payments)}_" que não foram encontrados 
+em Bordero.
+""",
+            )
+            for contato in contatos
+        ]
     logger.info("Finished processing files 'Pendencias' and 'Baixas'.")
 
 
