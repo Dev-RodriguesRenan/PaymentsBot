@@ -48,3 +48,8 @@ def move(source, destination):
     print(f"Moving file from {source} to {destination}")
     shutil.move(source, destination)
     return True
+
+def teardown():
+    java = os.system('taskkill /f /im java.exe')
+    fj = os.system('taskkill /f /im fj*')
+    return all([java,fj])

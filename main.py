@@ -105,7 +105,7 @@ em Bordero.
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        if sys.argv[1] == "--debug":
+        if sys.argv[1] in ["--debug",'-d']:
             main()
             sys.exit(0)
         else:
@@ -113,7 +113,7 @@ if __name__ == "__main__":
                 "[ERROR] Invalid argument. Use '--debug' to execute the script."
             )
             sys.exit(1)
-    schedule.every().day.at("06:00").do(main)
+    schedule.every().day.at("07:05").do(main)
 
     while True:
         schedule.run_pending()

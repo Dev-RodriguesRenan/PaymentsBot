@@ -1,4 +1,5 @@
 venv
+.venv
 Sikuli*
 sikuli_captured
 *.xml
@@ -9,3 +10,4 @@ results/
 logs/
 .env
 __pycache__/
+.pytest_cache/

@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../../keywords/keywords.robot
 Test Setup    Load Folder images
+Test Teardown    Teardown
 
 *** Test Cases ***
 Export Reports Lows

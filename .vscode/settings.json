@@ -9,10 +9,11 @@
     },
     "files.exclude": {
         "**/__pycache__": true,
+        "**/.pytest*": true,
         "**/venv": true,
         "**/Sikuli*": true,
         "**/*.xml": true,
-        "**/.ruff*":true
+        "**/.ruff*": true
     },
     "terminal.integrated.defaultProfile.windows": "Git Bash"
 }
