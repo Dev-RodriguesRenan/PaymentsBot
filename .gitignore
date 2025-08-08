@@ -3,6 +3,7 @@ venv
 Sikuli*
 sikuli_captured
 *.xml
+*.xlsx
 *.html
 data/
 tests/
