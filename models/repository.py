@@ -66,16 +66,21 @@ SELECT
     pb.centro_custo, 
     pb.grupo_centro_de_custo, 
     pb.centro_custo, 
-    c.nome as filename, 
-    c.origem as base
-    # b.id as bordero_id, pb.filename as filename_pagamentos
-FROM bordero b JOIN 
-carga c on b.carga_id = c.id JOIN
-pendencias_baixas pb on b.cnpj_cpf= pb.cnpj_cpf
-# AND b.nf = pb.documento -- garante que somente retornem as NFs que estejam no bordero e pendencias baixas
+    c.nome AS filename, 
+    c.origem AS base
+FROM bordero b 
+LEFT JOIN pendencias_baixas pb 
+ON pb.cnpj_cpf = b.cnpj_cpf
+JOIN carga c ON b.carga_id = c.id 
+
 """
         dataframe = pd.read_sql(query, conn)
+        # deleta duplicações
         dataframe.drop_duplicates(inplace=True)
+        # aplica um NaN onde as linhas forem str vazia
+        dataframe['cnpj_cpf']=dataframe['cnpj_cpf'].map(lambda x: pd.NA if str(x).strip() == '' else x)
+        # deleta linhas onde cnpj_cpf for NaN
+        dataframe.dropna(how='any',subset=['cnpj_cpf'],inplace=True)
         logger.info(f" DataFrame Payments Generated:\n{dataframe.head(5)}")
         return dataframe
 

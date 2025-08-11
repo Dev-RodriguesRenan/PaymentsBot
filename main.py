@@ -57,6 +57,7 @@ def main():
                 run_file(f"suites/{folder}/{file}")
     logger.info("Database and tables created successfully.")
     # check if the data directory exists and create pendencias baixas
+    if len(os.listdir('data')) < 2: raise FileNotFoundError('O diretorio não contem ambos os relatorios, verifique e tente novamente')
     for file in os.listdir("data"):
         if file.endswith(".xlsx"):
             logger.info(f" Processing file: {file}")
