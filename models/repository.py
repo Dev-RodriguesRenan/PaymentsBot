@@ -68,11 +68,11 @@ SELECT
     pb.centro_custo, 
     c.nome as filename, 
     c.origem as base
-    # b.id as bordero_id, pb.filename
+    # b.id as bordero_id, pb.filename as filename_pagamentos
 FROM bordero b JOIN 
 carga c on b.carga_id = c.id JOIN
 pendencias_baixas pb on b.cnpj_cpf= pb.cnpj_cpf
-AND b.nf = pb.documento -- garante que somente retornem as NFs que estejam no bordero e pendencias baixas
+# AND b.nf = pb.documento -- garante que somente retornem as NFs que estejam no bordero e pendencias baixas
 """
         dataframe = pd.read_sql(query, conn)
         dataframe.drop_duplicates(inplace=True)
