@@ -49,7 +49,8 @@ def move(source, destination):
     shutil.move(source, destination)
     return True
 
+
 def teardown():
-    java = os.system('taskkill /f /im java.exe')
-    fj = os.system('taskkill /f /im fj*')
-    return all([java,fj])
+    java = os.system("taskkill /f /im java.exe")
+    fj = os.system("taskkill /f /im fj*")
+    return all([java, fj])

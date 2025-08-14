@@ -56,8 +56,13 @@ def main():
             if file.endswith(".robot"):
                 run_file(f"suites/{folder}/{file}")
     logger.info("Database and tables created successfully.")
+    # check if exists more one file .xlsx in data
+    files_sum = sum(
+        [+1 if file.endswith(".xlsx") else 0 for file in os.listdir("data")]
+    )
+    if files_sum < 2:
+        raise FileExistsError("Há arquivos de relatorios faltando")
     # check if the data directory exists and create pendencias baixas
-    if len(os.listdir('data')) < 2: raise FileNotFoundError('O diretorio não contem ambos os relatorios, verifique e tente novamente')
     for file in os.listdir("data"):
         if file.endswith(".xlsx"):
             logger.info(f" Processing file: {file}")
@@ -106,7 +111,7 @@ em Bordero.
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        if sys.argv[1] in ["--debug",'-d']:
+        if sys.argv[1] in ["--debug", "-d"]:
             main()
             sys.exit(0)
         else:

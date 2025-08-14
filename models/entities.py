@@ -42,7 +42,8 @@ class Payments(Base):
     dtype = Column(Enum("pendencias", "baixas", name="dtype"), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
-    __mapper_args__ = {'confirm_deleted_rows':False}
+    __mapper_args__ = {"confirm_deleted_rows": False}
+
     def __init__(
         self,
         id,

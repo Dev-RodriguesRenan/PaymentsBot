@@ -59,18 +59,23 @@ SELECT
     pb.cnpj_cpf,
     pb.emitente,
     pb.documento,
+    b.nf AS `documento (bordero)`,
     pb.valor_parcela, 
     pb.valor_pendente, 
     pb.data_baixa,
     pb.idcentro_custo,
     pb.centro_custo, 
     pb.grupo_centro_de_custo, 
-    pb.centro_custo, 
     c.nome AS filename, 
-    c.origem AS base
+    c.origem AS base,
+    CASE 
+		WHEN pb.documento IS NOT NULL THEN "OK"
+        ELSE
+        "MISSING"
+	END AS `status`
 FROM bordero b 
 LEFT JOIN pendencias_baixas pb 
-ON pb.cnpj_cpf = b.cnpj_cpf
+ON pb.cnpj_cpf = b.cnpj_cpf  AND b.nf = pb.documento
 JOIN carga c ON b.carga_id = c.id 
 
 """
@@ -78,9 +83,11 @@ JOIN carga c ON b.carga_id = c.id
         # deleta duplicações
         dataframe.drop_duplicates(inplace=True)
         # aplica um NaN onde as linhas forem str vazia
-        dataframe['cnpj_cpf']=dataframe['cnpj_cpf'].map(lambda x: pd.NA if str(x).strip() == '' else x)
+        dataframe["cnpj_cpf"] = dataframe["cnpj_cpf"].map(
+            lambda x: pd.NA if str(x).strip() == "" else x
+        )
         # deleta linhas onde cnpj_cpf for NaN
-        dataframe.dropna(how='any',subset=['cnpj_cpf'],inplace=True)
+        dataframe.dropna(how="any", subset=["cnpj_cpf"], inplace=True)
         logger.info(f" DataFrame Payments Generated:\n{dataframe.head(5)}")
         return dataframe
 
