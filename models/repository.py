@@ -92,6 +92,38 @@ JOIN carga c ON b.carga_id = c.id
         return dataframe
 
 
+def special_cases_df_generator():
+    with get_engine().connect() as conn:
+        query = """
+SELECT 
+    pb.cnpj_cpf,
+    pb.emitente,
+    pb.documento,
+    b.nf AS `documento (bordero)`,
+    pb.valor_parcela, 
+    pb.valor_pendente, 
+    pb.data_baixa,
+    pb.idcentro_custo,
+    pb.centro_custo, 
+    pb.grupo_centro_de_custo, 
+    c.nome AS filename, 
+    c.origem AS base,
+    'MÚLTIPLAS_NFS' AS status
+FROM bordero b 
+JOIN carga c ON b.carga_id = c.id 
+JOIN pendencias_baixas pb ON b.cnpj_cpf = pb.cnpj_cpf
+WHERE pb.documento LIKE CONCAT('%%', b.nf, '%%')
+AND pb.documento != b.nf 
+"""
+        df = pd.read_sql(query, conn)
+        df.drop_duplicates(inplace=True)
+        df.dropna(inplace=True)
+        logger.info(
+            f" Dataframe Especials Cases Payments Generated:\n{df.head(5)}"
+        )
+        return df
+
+
 def not_occurrence_df_generator():
     with get_engine().connect() as conn:
         query = """
